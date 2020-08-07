@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="robots" content="noindex">
+  <title>AMP Cookie Consent</title>
+</head>
+<body>
+<script type="text/javascript">
+    var _iub = _iub || [];
+    _iub.csConfiguration = {
+        "reloadOnConsent":true,
+        "consentOnScroll":false,
+        "lang":"it",
+        "siteId":1475368,
+        "cookiePolicyId":47273256,
+        "enableCMP": true,
+        "tcfVersion": 2,
+        "askConsentIfCMPNotFound": true,
+        "isTCFConsentGlobal": true,
+        "googleAdsPreferenceManagement": true,
+        "banner":{
+            "slideDown":false,
+            "position":"float-bottom-center",
+            "acceptButtonDisplay":true,
+            "customizeButtonDisplay":true,
+            "backgroundOverlay": true, // Obbligatorio in quanto AMP richiede il caricamento del cookie banner in un iframe a schermo intero e gli iframe non possono essere cliccati
+            "rejectButtonDisplay": true // Consigliato
+        },
+        "callback": { // Obbligatoria
+            "onPreferenceExpressed": function (preference) {
+                var AMP_CONSENT_STRING_MAX_LENGTH = 1024;
+                var consentObject = {
+                    type: 'consent-response',
+                    action: preference && preference.consent ? 'accept' : 'reject'
+                };
+                if (typeof window.__tcfapi === 'function') {
+                    __tcfapi('getTCData', 2, function (res) {
+                        var consentString = res.tcString;
+                        if (consentString.length <= AMP_CONSENT_STRING_MAX_LENGTH) {
+                            consentObject.info = consentString;
+                        }
+                        console.log('send consent-response', consentObject.action, 'with CMP v2 consent string', consentString);
+                        window.parent.postMessage(consentObject, '*');
+                    });
+                } else if (typeof window.__cmp === 'function') {
+                    __cmp('getConsentData', null, function (res) {
+                        var consentString = res.consentData;
+                        if (consentString.length <= AMP_CONSENT_STRING_MAX_LENGTH) {
+                            consentObject.info = consentString;
+                        }
+                        console.log('send consent-response', consentObject.action, 'with CMP consent string', consentString);
+                        window.parent.postMessage(consentObject, '*');
+                    });
+                } else {
+                    console.log('send consent-response', consentObject.action);
+                    window.parent.postMessage(consentObject, '*');
+                }
+            }
+        }
+    };
+</script><script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
+</body>
+</html>
